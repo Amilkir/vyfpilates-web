@@ -1,6 +1,5 @@
 import Image from "next/image"
 import FadeText from "./FadeText"
-import BookingButton from "./BookingButton"
 
 export default function TeacherIntro() {
   return (
@@ -45,11 +44,14 @@ export default function TeacherIntro() {
               </p>
             </FadeText>
             <FadeText delay={600}>
-              <BookingButton
+              <a
+                href="https://wa.me/5491158801522?text=Hola,%20quiero%20consultar%20sobre%20VyF%20Pilates."
+                target="_blank"
+                rel="noreferrer"
                 className="inline-block bg-[#874587] hover:bg-[#743a74] text-white px-6 py-3 font-semibold rounded-full transition-colors"
               >
                 Reserva una clase conmigo
-              </BookingButton>
+              </a>
             </FadeText>
           </div>
 
