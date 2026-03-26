@@ -1,4 +1,3 @@
-"use client";
 
 import * as React from "react";
 import { Star } from "lucide-react";
@@ -65,19 +64,43 @@ function Stars({
   );
 }
 
-export default function Reviews() {
-  const [data, setData] = React.useState<any>(null);
-  const [error, setError] = React.useState<string | null>(null);
+async function getReviews() {
+  const placeId = process.env.GOOGLE_PLACE_ID;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-  React.useEffect(() => {
-    fetch("/api/google-reviews")
-      .then((r) => (r.ok ? r.json() : r.text().then((t) => Promise.reject(t))))
-      .then(setData)
-      .catch(() => setError("No se pudieron cargar las reseñas"));
-  }, []);
+  if (!placeId || !apiKey) {
+    return null;
+  }
 
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!data) return <p className="max-w-7xl mx-auto px-6 py-8">Cargando reseñas…</p>;
+  const url =
+    `https://places.googleapis.com/v1/places/${placeId}` +
+    `?languageCode=es-AR` +
+    `&fields=displayName,rating,reviewSummary,` +
+    `reviews.rating,reviews.publishTime,reviews.text,reviews.originalText,` +
+    `reviews.authorAttribution` +
+    `&key=${apiKey}`;
+
+  try {
+    const res = await fetch(url, {
+      headers: {
+        'X-Goog-FieldMask': '*',
+        'Accept-Language': 'es-AR',
+      },
+      next: { revalidate: 3600 }, // Revalidar cada hora (o según prefieras)
+    });
+
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.error("Error fetching reviews:", err);
+    return null;
+  }
+}
+
+export default async function Reviews() {
+  const data = await getReviews();
+
+  if (!data) return null; // O un mensaje de error sutil
 
   const reviews: Review[] = (data.reviews ?? []).slice(0, 5);
   const average = Number(data.rating ?? 0);
