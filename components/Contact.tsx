@@ -17,7 +17,7 @@ export default function Contact() {
           <div>
             <ul className="space-y-3 text-neutral-600">
               <FadeText delay={100}>
-                <li>📍 Nicaragua 6002, C.A.B.A.</li>
+                <li>📍 Medrano 1650, Palermo Soho</li>
               </FadeText>
               <FadeText delay={200}>
                 <li>🕒 Horarios: Lun a Vie de 8:00 a 20:00</li>
